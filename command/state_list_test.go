@@ -96,10 +96,39 @@ func TestStateListWithNonExistentID(t *testing.T) {
 	}
 }
 
-func TestStateList_backendState(t *testing.T) {
+func TestStateList_backendDefaultState(t *testing.T) {
 	// Create a temporary working directory that is empty
 	td := tempDir(t)
-	copy.CopyDir(testFixturePath("state-list-backend"), td)
+	copy.CopyDir(testFixturePath("state-list-backend-default"), td)
+	defer os.RemoveAll(td)
+	defer testChdir(t, td)()
+
+	p := testProvider()
+	ui := cli.NewMockUi()
+	c := &StateListCommand{
+		Meta: Meta{
+			testingOverrides: metaOverridesForProvider(p),
+			Ui:               ui,
+		},
+	}
+
+	args := []string{}
+	if code := c.Run(args); code != 0 {
+		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
+	}
+
+	// Test that outputs were displayed
+	expected := "null_resource.a\n"
+	actual := ui.OutputWriter.String()
+	if actual != expected {
+		t.Fatalf("Expected:\n%q\n\nTo equal: %q", actual, expected)
+	}
+}
+
+func TestStateList_backendCustomState(t *testing.T) {
+	// Create a temporary working directory that is empty
+	td := tempDir(t)
+	copy.CopyDir(testFixturePath("state-list-backend-custom"), td)
 	defer os.RemoveAll(td)
 	defer testChdir(t, td)()
 
