@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/hashicorp/terraform/states"
+	"github.com/hashicorp/terraform/states/statefile"
 )
 
 // NewFullFake returns a full state manager that really only supports transient
@@ -51,6 +52,10 @@ var _ Full = (*fakeFull)(nil)
 
 func (m *fakeFull) State() *states.State {
 	return m.t.State()
+}
+
+func (m *fakeFull) StateFile() *statefile.File {
+	return m.t.StateFile()
 }
 
 func (m *fakeFull) WriteState(s *states.State) error {

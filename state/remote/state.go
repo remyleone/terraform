@@ -38,6 +38,14 @@ func (s *State) State() *states.State {
 	return s.state.DeepCopy()
 }
 
+// statemgr.Reader impl.
+func (s *State) StateFile() *statefile.File {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return statefile.New(s.state.DeepCopy(), s.lineage, s.serial)
+}
+
 // statemgr.Writer impl.
 func (s *State) WriteState(state *states.State) error {
 	s.mu.Lock()

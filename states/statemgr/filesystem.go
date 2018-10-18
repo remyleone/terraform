@@ -119,6 +119,11 @@ func (s *Filesystem) State() *states.State {
 	return s.file.DeepCopy().State
 }
 
+// StateFile is an implementation of Reader.
+func (s *Filesystem) StateFile() *statefile.File {
+	return s.file.DeepCopy()
+}
+
 // WriteState is an incorrect implementation of Writer that actually also
 // persists.
 // WriteState for LocalState always persists the state as well.

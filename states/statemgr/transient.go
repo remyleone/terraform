@@ -1,6 +1,9 @@
 package statemgr
 
-import "github.com/hashicorp/terraform/states"
+import (
+	"github.com/hashicorp/terraform/states"
+	"github.com/hashicorp/terraform/states/statefile"
+)
 
 // Transient is a union of the Reader and Writer interfaces, for types that
 // deal with transient snapshots.
@@ -43,6 +46,12 @@ type Reader interface {
 	// no storage shared with any other call, so the caller may freely mutate
 	// the returned object via the state APIs.
 	State() *states.State
+
+	// StateFile returns the current state file.
+	//
+	// Each call to StateFile returns an entirely-distinct copy of the state
+	// file, with no storage shared with any other call.
+	StateFile() *statefile.File
 }
 
 // Writer is the interface for managers that can create transient snapshots
